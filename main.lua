@@ -1,13 +1,22 @@
 function love.load()
     dirHor = 1
     dirVer = 0
-    headX = 100
+    headX = 200
     headY = 100
     moveSpeed = 25
     snakeSize = 50
     cntr = moveSpeed
-    tailPosX = {}
-    tailPosY = {}
+    tailPosX = {150, 100}
+    tailPosY = {100, 100}
+    applePosX = 0
+    applePosY = 0
+
+    function newApplePosition()
+        applePosX = math.random( 0, 15 ) * 50
+        applePosY = math.random( 0, 11 ) * 50
+    end
+
+    newApplePosition()
 end
 
 function love.update(dt)
@@ -15,10 +24,15 @@ function love.update(dt)
     if cntr <= 0 then 
         cntr = moveSpeed
         moveSnake()
-    end 
+    end
+    if applePosX == headX and applePosY == headY then
+        growTail()
+    end
 end
 
 function love.draw()
+    love.graphics.setColor(0.8, 0, 0)
+    love.graphics.rectangle("fill", applePosX, applePosY, snakeSize, snakeSize)
     love.graphics.setColor(0, 0.8, 0)
     love.graphics.rectangle("fill", headX, headY, snakeSize, snakeSize)
     for i, v in pairs(tailPosX) do
@@ -27,20 +41,18 @@ function love.draw()
 end
 
 function love.keypressed(key)
-    if key == "right" then
+    if key == "right" and dirHor ~= -1 then
         dirHor = 1
         dirVer = 0
-    elseif key == "left" then
+    elseif key == "left" and dirHor ~= 1 then
         dirHor = -1
         dirVer = 0
-    elseif key == "up" then
+    elseif key == "up" and dirVer ~= 1 then
         dirVer = -1
         dirHor = 0
-    elseif key == "down" then
+    elseif key == "down" and dirVer ~= -1 then
         dirVer = 1
         dirHor = 0
-    else
-        growTail();
     end
 end
 
@@ -59,6 +71,7 @@ function moveSnake()
 end
 
 function growTail()
+    newApplePosition()
     if #tailPosX == 0 then
         tailPosX[#tailPosX + 1] = headX
         tailPosY[#tailPosY + 1] = headY
