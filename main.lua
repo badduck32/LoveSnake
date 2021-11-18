@@ -1,6 +1,8 @@
 function love.load()
     dirHor = 1
     dirVer = 0
+    prevDirHor = 1
+    prevDirVer = 0
     headX = 200
     headY = 100
     moveSpeed = 25
@@ -34,9 +36,6 @@ function love.update(dt)
         cntr = moveSpeed
         moveSnake()
     end
-    if applePosX == headX and applePosY == headY then
-        growTail()
-    end
 end
 
 function love.draw()
@@ -50,22 +49,24 @@ function love.draw()
 end
 
 function love.keypressed(key)
-    if key == "right" and dirHor ~= -1 then
+    if key == "right" and prevDirHor ~= -1 then
         dirHor = 1
         dirVer = 0
-    elseif key == "left" and dirHor ~= 1 then
+    elseif key == "left" and prevDirHor ~= 1 then
         dirHor = -1
         dirVer = 0
-    elseif key == "up" and dirVer ~= 1 then
+    elseif key == "up" and prevDirVer ~= 1 then
         dirVer = -1
         dirHor = 0
-    elseif key == "down" and dirVer ~= -1 then
+    elseif key == "down" and prevDirVer ~= -1 then
         dirVer = 1
         dirHor = 0
     end
 end
 
 function moveSnake()
+    prevDirHor = dirHor
+    prevDirVer = dirVer
     for i, v in pairs(tailPosX) do
         if #tailPosX - i > 0 then
             tailPosX[#tailPosX - i + 1] = tailPosX[#tailPosX - i]
@@ -77,6 +78,9 @@ function moveSnake()
     end
     headX = headX + snakeSize * dirHor
     headY = headY + snakeSize * dirVer
+    if applePosX == headX and applePosY == headY then
+        growTail()
+    end
 end
 
 function growTail()
