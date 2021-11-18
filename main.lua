@@ -14,6 +14,15 @@ function love.load()
     function newApplePosition()
         applePosX = math.random( 0, 15 ) * 50
         applePosY = math.random( 0, 11 ) * 50
+        if applePosX ~= headX and applePosY ~= headY then
+            for i, v in pairs(tailPosX) do 
+                if tailPosX[i] == applePosX and tailPosY[i] == applePosY then 
+                    newApplePosition()
+                end
+            end
+        else 
+            newApplePosition()
+        end
     end
 
     newApplePosition()
