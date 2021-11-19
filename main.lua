@@ -1,6 +1,6 @@
 function love.load()
     
-    moveSpeed = 25
+    moveSpeed = 1
     cellSize = 25
     cntr = moveSpeed
     screenWidth, screenHeight = love.graphics.getDimensions();
@@ -26,6 +26,10 @@ function love.load()
         dirVer = 0
         prevDirHor = 1
         prevDirVer = 0
+        bufferedDirHor = 0
+        bufferedDirVer = 0
+        changedDir = false
+        buffered = false
         headX = 200
         headY = 100
         tailPosX = {headX - cellSize, headX - cellSize - cellSize}
@@ -45,6 +49,7 @@ function love.update(dt)
 end
 
 function love.draw()
+    love.graphics.print(tostring(changedDir), 100, 100)
     love.graphics.setColor(0.8, 0, 0)
     love.graphics.rectangle("fill", applePosX, applePosY, cellSize, cellSize)
     love.graphics.setColor(0, 0.8, 0)
@@ -54,19 +59,49 @@ function love.draw()
     end
 end
 
+--buffer maken
 function love.keypressed(key)
     if key == "right" and prevDirHor ~= -1 then
-        dirHor = 1
-        dirVer = 0
+        if changedDir == false then 
+            dirHor = 1
+            dirVer = 0
+            changedDir = true
+        else 
+            bufferedDirHor = 1
+            bufferedDirVer = 0
+            buffered = true
+        end
     elseif key == "left" and prevDirHor ~= 1 then
-        dirHor = -1
-        dirVer = 0
+        if changedDir == false then
+            dirHor = -1
+            dirVer = 0
+            changedDir = true
+        else 
+            bufferedDirHor = -1
+            bufferedDirVer = 0
+            buffered = true
+        end
     elseif key == "up" and prevDirVer ~= 1 then
-        dirVer = -1
-        dirHor = 0
+        if changedDir == false then
+            dirVer = -1
+            dirHor = 0
+            changedDir = true
+        else 
+            bufferedDirHor = 0
+            bufferedDirVer = -1
+            buffered = true
+        end
     elseif key == "down" and prevDirVer ~= -1 then
-        dirVer = 1
-        dirHor = 0
+        if changedDir == false then
+            dirVer = 1
+            dirHor = 0
+            changedDir = true
+        else 
+            bufferedDirHor = 0
+            bufferedDirVer = 1
+            buffered = true
+        end
+
     end
 end
 
@@ -82,8 +117,17 @@ function moveSnake()
             tailPosY[1] = headY
         end
     end
-    headX = headX + cellSize * dirHor
-    headY = headY + cellSize * dirVer
+    if buffered == true and changedDir ~= true then
+        headX = headX + cellSize * bufferedDirHor
+        headY = headY + cellSize * bufferedDirVer
+        bufferedDirHor = 0
+        bufferedDirVer = 0
+        buffered = false
+    else 
+        headX = headX + cellSize * dirHor
+        headY = headY + cellSize * dirVer
+        changedDir = false
+    end
     --check if it touches an apple
     if applePosX == headX and applePosY == headY then
         growTail()
