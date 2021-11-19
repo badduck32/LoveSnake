@@ -1,18 +1,11 @@
 function love.load()
-    dirHor = 1
-    dirVer = 0
-    prevDirHor = 1
-    prevDirVer = 0
-    headX = 200
-    headY = 100
+    
     moveSpeed = 25
     snakeSize = 50
     cntr = moveSpeed
-    tailPosX = {150, 100}
-    tailPosY = {100, 100}
-    applePosX = 0
-    applePosY = 0
-
+    --applePosX = 0
+    --applePosY = 0
+    
     function newApplePosition()
         applePosX = math.random( 0, 15 ) * 50
         applePosY = math.random( 0, 11 ) * 50
@@ -26,8 +19,20 @@ function love.load()
             newApplePosition()
         end
     end
+    
+    function reset()
+        dirHor = 1
+        dirVer = 0
+        prevDirHor = 1
+        prevDirVer = 0
+        headX = 200
+        headY = 100
+        tailPosX = {150, 100}
+        tailPosY = {100, 100}
+        newApplePosition()
+    end
 
-    newApplePosition()
+    reset()
 end
 
 function love.update(dt)
@@ -78,9 +83,18 @@ function moveSnake()
     end
     headX = headX + snakeSize * dirHor
     headY = headY + snakeSize * dirVer
+    --check if it touches an apple
     if applePosX == headX and applePosY == headY then
         growTail()
     end
+    --check if it touches its own tail
+    for i, v in pairs(tailPosX) do 
+        if tailPosX[i] == headX and tailPosY[i] == headY then 
+            reset()
+        end
+    end
+    --check if it's not out of bounds
+    if headX >= 800 or headX < 0 or headY < 0 or headY >=  
 end
 
 function growTail()
