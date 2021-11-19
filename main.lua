@@ -1,14 +1,15 @@
 function love.load()
     
     moveSpeed = 25
-    snakeSize = 50
+    cellSize = 25
     cntr = moveSpeed
+    screenWidth, screenHeight = love.graphics.getDimensions();
     --applePosX = 0
     --applePosY = 0
     
     function newApplePosition()
-        applePosX = math.random( 0, 15 ) * 50
-        applePosY = math.random( 0, 11 ) * 50
+        applePosX = math.random( 0, (screenWidth / cellSize) - 1 ) * cellSize
+        applePosY = math.random( 0, (screenHeight / cellSize) - 1 ) * cellSize
         if applePosX ~= headX and applePosY ~= headY then
             for i, v in pairs(tailPosX) do 
                 if tailPosX[i] == applePosX and tailPosY[i] == applePosY then 
@@ -27,8 +28,8 @@ function love.load()
         prevDirVer = 0
         headX = 200
         headY = 100
-        tailPosX = {150, 100}
-        tailPosY = {100, 100}
+        tailPosX = {headX - cellSize, headX - cellSize - cellSize}
+        tailPosY = {headY, headY}
         newApplePosition()
     end
 
@@ -45,11 +46,11 @@ end
 
 function love.draw()
     love.graphics.setColor(0.8, 0, 0)
-    love.graphics.rectangle("fill", applePosX, applePosY, snakeSize, snakeSize)
+    love.graphics.rectangle("fill", applePosX, applePosY, cellSize, cellSize)
     love.graphics.setColor(0, 0.8, 0)
-    love.graphics.rectangle("fill", headX, headY, snakeSize, snakeSize)
+    love.graphics.rectangle("fill", headX, headY, cellSize, cellSize)
     for i, v in pairs(tailPosX) do
-        love.graphics.rectangle("fill", tailPosX[i], tailPosY[i], snakeSize, snakeSize)
+        love.graphics.rectangle("fill", tailPosX[i], tailPosY[i], cellSize, cellSize)
     end
 end
 
@@ -81,8 +82,8 @@ function moveSnake()
             tailPosY[1] = headY
         end
     end
-    headX = headX + snakeSize * dirHor
-    headY = headY + snakeSize * dirVer
+    headX = headX + cellSize * dirHor
+    headY = headY + cellSize * dirVer
     --check if it touches an apple
     if applePosX == headX and applePosY == headY then
         growTail()
