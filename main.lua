@@ -94,7 +94,9 @@ function moveSnake()
         end
     end
     --check if it's not out of bounds
-    if headX >= 800 or headX < 0 or headY < 0 or headY >=  
+    if headX >= 800 or headX < 0 or headY < 0 or headY >= 600 then 
+        reset()
+    end
 end
 
 function growTail()
